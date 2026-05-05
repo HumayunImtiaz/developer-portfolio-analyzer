@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes';
 import githubRoutes from './routes/github.routes';
 import analysisRoutes from './routes/analysis.routes';
 import compareRoutes from './routes/compare.routes';
+import resumeRoutes from './routes/resume.routes';
 import { errorHandler } from './middleware/error.middleware';
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/github', githubRoutes);
 app.use('/api/analysis', analysisRoutes);
 app.use('/api/compare', compareRoutes);
+app.use('/api/resume', resumeRoutes);
 
 // Error Handler
 app.use(errorHandler);

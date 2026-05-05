@@ -55,3 +55,18 @@ export interface AnalysisJobData {
   repos: GithubRepoData[];
   userId?: string;
 }
+
+// Resume Analysis Result
+export interface ResumeAnalysisResult {
+  atsScore: number;
+  strengths: string[];
+  improvements: string[];
+  tips: string[];
+}
+
+export interface ResumeAnalysisJobData {
+  userId: string;
+  fileName: string;
+  extractedText: string;
+  jobDescription?: string;
+}

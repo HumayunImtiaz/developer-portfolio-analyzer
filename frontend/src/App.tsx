@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ComparePage } from './pages/ComparePage';
+import { ResumeAnalysisPage } from './pages/ResumeAnalysisPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/compare" element={<ComparePage />} />
+                <Route path="/resume" element={<ResumeAnalysisPage />} />
               </Route>
               
               {/* Fallback route */}

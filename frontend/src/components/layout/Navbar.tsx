@@ -32,6 +32,9 @@ export const Navbar = () => {
             <Link to="/compare" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
               Compare
             </Link>
+            <Link to="/resume" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+              Resume
+            </Link>
             <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
             <span className="text-sm font-medium text-slate-500 hidden sm:block">Hi, {user?.name}</span>
             <button 
