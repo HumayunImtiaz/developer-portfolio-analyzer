@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../types';
 import ResumeAnalysis from '../models/resumeAnalysis.model';
-import { extractTextFromFile } from '../services/resume.service';
+import { parseResumeWithAffinda, analyzeResumeWithGemini, formatParsedForPrompt } from '../services/resume.service';
 import { enqueueResumeAnalysis } from '../services/resumeQueue.service';
 
 export const analyzeResume = async (req: AuthRequest, res: Response) => {
@@ -18,16 +18,20 @@ export const analyzeResume = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 
-    // Extract text from the buffer synchronously
-    const extractedText = await extractTextFromFile(file.buffer, file.mimetype);
+    // Step 1: Parse resume with Affinda (structured extraction)
+    const parsedData = await parseResumeWithAffinda(file.buffer, file.originalname);
+    const formattedData = formatParsedForPrompt(parsedData);
 
-    // Enqueue the AI processing to BullMQ and wait for result
     const result = await enqueueResumeAnalysis({
       userId,
       fileName: file.originalname,
-      extractedText,
+      parsedData: formattedData,
       jobDescription,
     });
+
+    if (result && result.error) {
+      return res.status(400).json({ success: false, message: result.error });
+    }
 
     res.status(200).json({
       success: true,

@@ -9,6 +9,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@affinda/affinda": "^7.7.1",
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.7.8",
@@ -22,6 +23,7 @@
     "mammoth": "^1.12.0",
     "mongoose": "^8.3.4",
     "multer": "^2.1.1",
+    "openai": "^6.36.0",
     "pdf-parse": "^2.4.5",
     "zod": "^3.23.8"
   },

@@ -17,10 +17,14 @@ if (redisUrl) {
   const worker = new Worker(
     queueName,
     async (job) => {
-      const { userId, fileName, extractedText, jobDescription } = job.data as ResumeAnalysisJobData;
+      const { userId, fileName, parsedData, jobDescription } = job.data as ResumeAnalysisJobData;
       
       try {
-        const aiResult = await analyzeResumeWithGemini(extractedText, jobDescription);
+        const aiResult = await analyzeResumeWithGemini(parsedData, jobDescription);
+        
+        if (aiResult.error) {
+          throw new Error(aiResult.error); // BullMQ still needs throws to retry, but we catch it in controller for inline
+        }
         
         const newAnalysis = new ResumeAnalysis({
           userId,
@@ -58,13 +62,18 @@ export const enqueueResumeAnalysis = async (data: ResumeAnalysisJobData) => {
   if (resumeQueueInstance && resumeQueueEvents) {
     const job = await resumeQueueInstance.add('analyze-resume', data, {
       attempts: 3,
-      backoff: { type: 'exponential', delay: 15000 }, // Wait 15s, then 30s before retrying
+      backoff: { type: 'exponential', delay: 15000 },
     });
     const result = await job.waitUntilFinished(resumeQueueEvents);
     return result;
   } else {
     // Fallback to inline
-    const aiResult = await analyzeResumeWithGemini(data.extractedText, data.jobDescription);
+    const aiResult = await analyzeResumeWithGemini(data.parsedData, data.jobDescription);
+    
+    if (aiResult.error) {
+      return { error: aiResult.error };
+    }
+
     const newAnalysis = new ResumeAnalysis({
       userId: data.userId,
       fileName: data.fileName,

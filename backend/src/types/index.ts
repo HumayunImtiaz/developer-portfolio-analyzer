@@ -67,6 +67,12 @@ export interface ResumeAnalysisResult {
 export interface ResumeAnalysisJobData {
   userId: string;
   fileName: string;
-  extractedText: string;
+  parsedData: {
+    name: string;
+    skills: string;
+    experience: string;
+    education: string;
+    summary: string;
+  };
   jobDescription?: string;
 }

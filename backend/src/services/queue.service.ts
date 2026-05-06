@@ -18,6 +18,11 @@ if (redisUrl) {
       const { username, profileStats, repos, userId } = job.data;
       try {
         const aiResult = await analyzeWithGemini(profileStats, repos);
+        
+        if (aiResult.error) {
+          throw new Error(aiResult.error);
+        }
+
         await AnalysisReport.findOneAndUpdate(
           { githubUsername: username },
           {
@@ -67,6 +72,11 @@ export const enqueueAnalysis = async (data: {
     setImmediate(async () => {
       try {
         const aiResult = await analyzeWithGemini(data.profileStats, data.repos);
+        
+        if (aiResult.error) {
+           throw new Error(aiResult.error);
+        }
+
         await AnalysisReport.findOneAndUpdate(
           { githubUsername: data.username },
           {
