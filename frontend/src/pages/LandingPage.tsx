@@ -8,7 +8,7 @@ export const LandingPage: React.FC = () => {
   const { isLoggedIn } = useAuth();
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 sm:px-6 w-full max-w-5xl mx-auto animate-fade-in-up">
+    <div className="flex flex-col items-center justify-center py-16 px-4 sm:px-6 w-full max-w-6xl mx-auto animate-fade-in-up">
       <div className="bg-primary/10 text-primary p-4 rounded-2xl mb-8 animate-float">
         <GithubIcon size={48} />
       </div>
@@ -24,29 +24,43 @@ export const LandingPage: React.FC = () => {
         Get deep insights on GitHub profiles and optimize your resume for ATS with AI-driven feedback instantly.
       </p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-16">
         {/* GitHub Analyzer Card */}
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl flex flex-col items-center text-center transition-transform hover:-translate-y-2">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">GitHub Profile Analyzer</h2>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">Profile Analyzer</h2>
           <p className="text-slate-600 dark:text-slate-400 mb-8 flex-grow">
             Fetch real-time stats and get AI scoring on developer profiles.
           </p>
           <Link 
-            to={isLoggedIn ? "/dashboard" : "/login"} 
+            to={isLoggedIn ? "/dashboard" : "/login?redirect=/dashboard"} 
             className="w-full py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-primary/25"
           >
             Analyze Profile
           </Link>
         </div>
 
+        {/* Compare Profiles Card */}
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl flex flex-col items-center text-center transition-transform hover:-translate-y-2">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">Compare Profiles</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-8 flex-grow">
+            Compare two GitHub profiles side-by-side with AI comparisons.
+          </p>
+          <Link 
+            to={isLoggedIn ? "/compare" : "/login?redirect=/compare"} 
+            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-emerald-500/25"
+          >
+            Compare Now
+          </Link>
+        </div>
+
         {/* Resume Analysis Card */}
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl flex flex-col items-center text-center transition-transform hover:-translate-y-2">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">AI Resume Analysis</h2>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">Resume Analysis</h2>
           <p className="text-slate-600 dark:text-slate-400 mb-8 flex-grow">
             Upload your resume and check your ATS match with actionable tips.
           </p>
           <Link 
-            to={isLoggedIn ? "/resume" : "/login"} 
+            to={isLoggedIn ? "/resume" : "/login?redirect=/resume"} 
             className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-indigo-500/25"
           >
             Analyze Resume

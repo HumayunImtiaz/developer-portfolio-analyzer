@@ -1,8 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../types';
 import ResumeAnalysis from '../models/resumeAnalysis.model';
-import { parseResumeWithAffinda, analyzeResumeWithGemini, formatParsedForPrompt } from '../services/resume.service';
-import { enqueueResumeAnalysis } from '../services/resumeQueue.service';
+import { parseAndAnalyzeResume } from '../services/resume.service';
 
 export const analyzeResume = async (req: AuthRequest, res: Response) => {
   try {
@@ -18,24 +17,26 @@ export const analyzeResume = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 
-    // Step 1: Parse resume with Affinda (structured extraction)
-    const parsedData = await parseResumeWithAffinda(file.buffer, file.originalname);
-    const formattedData = formatParsedForPrompt(parsedData);
+    // New Free Method: Parses text and analyze with AI in one go
+    const analysis = await parseAndAnalyzeResume(file.buffer, file.originalname, jobDescription);
 
-    const result = await enqueueResumeAnalysis({
+    // Save to Database
+    const savedAnalysis = await ResumeAnalysis.create({
       userId,
       fileName: file.originalname,
-      parsedData: formattedData,
-      jobDescription,
+      name: analysis.name,
+      skills: analysis.skills,
+      summary: analysis.summary,
+      atsScore: analysis.atsScore,
+      strengths: analysis.strengths,
+      improvements: analysis.improvements,
+      tips: analysis.tips,
+      status: 'completed'
     });
-
-    if (result && result.error) {
-      return res.status(400).json({ success: false, message: result.error });
-    }
 
     res.status(200).json({
       success: true,
-      data: result,
+      data: savedAnalysis,
     });
   } catch (error: any) {
     console.error('Analyze Resume Error:', error);

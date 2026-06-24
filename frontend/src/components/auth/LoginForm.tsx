@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { loginUser } from '../../services/auth.service';
 import { useAuth } from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
 const loginSchema = z.object({
@@ -18,6 +18,7 @@ export const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -33,7 +34,8 @@ export const LoginForm = () => {
       const response = await loginUser(data);
       if (response.success) {
         login(response.user, response.token);
-        navigate('/dashboard');
+        const redirectPath = searchParams.get('redirect') || '/dashboard';
+        navigate(redirectPath);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to login. Please try again.');

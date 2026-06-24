@@ -12,7 +12,7 @@ export const fetchGithubProfile = async (username: string) => {
     headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
   }
 
-  // 1. Check if profile exists and is cached within 24 hours
+
   const cachedProfile = await GithubProfile.findOne({ username: new RegExp(`^${username}$`, 'i') }).populate('repoList');
   if (cachedProfile) {
     const hoursSinceFetch = (Date.now() - cachedProfile.fetchedAt.getTime()) / (1000 * 60 * 60);
@@ -29,10 +29,15 @@ export const fetchGithubProfile = async (username: string) => {
   }
   
   if (!userRes.ok) {
+    const errorData = await userRes.json().catch(() => ({}));
+    console.error('GitHub API Error:', { status: userRes.status, data: errorData });
     if (userRes.status === 403 || userRes.status === 429) {
-      throw new Error('GitHub API limit reached, try later');
+      throw new Error('GitHub API limit reached or forbidden, try later');
     }
-    throw new Error('Failed to fetch user from GitHub');
+    if (userRes.status === 401) {
+      throw new Error('Invalid GITHUB_TOKEN. Please update it in .env');
+    }
+    throw new Error(`Failed to fetch user from GitHub: ${errorData.message || userRes.statusText}`);
   }
 
   const userData = await userRes.json();
@@ -52,7 +57,7 @@ export const fetchGithubProfile = async (username: string) => {
   // Calculate stats
   let totalStars = 0;
   let totalForks = 0;
-  let reposWithReadme = 0; // Requires an extra API call per repo usually, but we will approximate or leave as 0 and adjust if needed, or check repo properties
+  let reposWithReadme = 0; 
   const languageMap: Record<string, number> = {};
 
   const savedRepos = await Promise.all(
@@ -64,8 +69,7 @@ export const fetchGithubProfile = async (username: string) => {
         languageMap[repo.language] = (languageMap[repo.language] || 0) + 1;
       }
       
-      // Approximation for README: Assume true for now as checking each repo takes too many API calls
-      // A more robust approach requires checking trees or contents API
+   
       const hasReadme = repo.has_wiki || repo.description ? true : false;
       if (hasReadme) reposWithReadme++;
 
