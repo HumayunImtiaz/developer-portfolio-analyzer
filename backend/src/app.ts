@@ -15,7 +15,7 @@ const app: Application = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: true,
   credentials: true,
 }));
 app.use(helmet());
@@ -27,6 +27,9 @@ app.use('/api/github', githubRoutes);
 app.use('/api/analysis', analysisRoutes);
 app.use('/api/compare', compareRoutes);
 app.use('/api/resume', resumeRoutes);
+
+// Simple Root Route
+app.get('/', (req, res) => res.json({ message: 'GitHub Profile Analyzer API is running!' }));
 
 // Error Handler
 app.use(errorHandler);

@@ -13,6 +13,8 @@ export const redisClient = redisUrl
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
     retryStrategy,
+    family: 4,
+    tls: redisUrl.startsWith('rediss://') ? { rejectUnauthorized: false } : undefined,
   })
   : new Redis({
     maxRetriesPerRequest: null,
