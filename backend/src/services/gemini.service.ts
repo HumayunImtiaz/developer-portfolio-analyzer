@@ -33,7 +33,7 @@ export const analyzeWithGemini = async (profileStats: any, repos: any[]) => {
 
   try {
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
     });
@@ -69,7 +69,7 @@ export const compareWithGemini = async (user1Stats: any, user2Stats: any) => {
 
   try {
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
     });
